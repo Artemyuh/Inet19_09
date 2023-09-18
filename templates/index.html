@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Форма отправки данных</title>
+</head>
+<body>
+    <form action="/submit" method="POST" id="data-form">
+        <label for="last-name">Фамилия:</label>
+        <input type="text" id="last-name" name="last_name"><br><br>
+
+        <label for="first-name">Имя:</label>
+        <input type="text" id="first-name" name="first_name"><br><br>
+
+        <label for="student-id">Номер студенческого:</label>
+        <input type="text" id="student-id" name="student_id"><br><br>
+
+        <input type="submit" value="Отправить">
+    </form>
+
+    <div id="data-list" style="display: none;">
+        <h2>Список полученных данных:</h2>
+        <ul id="data-items">
+        </ul>
+    </div>
+
+    <script>
+        document.getElementById('data-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const form = e.target;
+            const formData = new FormData(form);
+            
+            fetch('/submit', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+               
+                form.style.display = 'none';
+                const dataList = document.getElementById('data-list');
+                dataList.style.display = 'block';
+
+               
+                const dataItems = document.getElementById('data-items');
+                for (const [key, value] of Object.entries(data)) {
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `<strong>${key}:</strong> ${value}`;
+                    dataItems.appendChild(listItem);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
